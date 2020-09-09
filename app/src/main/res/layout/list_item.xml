@@ -1,0 +1,46 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="cocktailData"
+            type="com.aldidwikip.thecocktail.data.model.Cocktail" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        card_view:cardCornerRadius="8dp"
+        card_view:cardElevation="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/img_item_photo"
+                img_from_url="@{cocktailData.cocktailImg}"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:scaleType="center"
+                tools:src="@mipmap/ic_launcher" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_item_photo"
+                android:layout_marginTop="10dp"
+                android:text="@{cocktailData.cocktailName}"
+                android:textColor="@color/textItemColor"
+                android:textSize="16sp"
+                tools:text="Cocktail Name" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

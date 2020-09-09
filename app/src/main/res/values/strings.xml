@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">The Cocktail</string>
+    <string name="serve">Serve</string>
+    <string name="instructions">Instructions</string>
+
+    <string name="ARG_ID">cocktail_id</string>
+</resources>
