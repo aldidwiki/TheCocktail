@@ -12,9 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.aldidwikip.thecocktail.R
+import com.aldidwikip.thecocktail.data.model.CocktailDetail
 import com.aldidwikip.thecocktail.databinding.FragmentDetailBinding
-import com.aldidwikip.thecocktail.util.DataState
+import com.aldidwikip.thecocktail.ui.adapter.CocktailIngredientsAdapter
+import com.aldidwikip.thecocktail.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_detail.*
 
@@ -49,12 +52,33 @@ class DetailFragment : Fragment() {
         detailViewModel.cocktail(cocktailId!!).observe(viewLifecycleOwner) { dataState ->
             when (dataState) {
                 is DataState.Success -> {
-                    detailViewModel.getCocktail(dataState.data[0])
+                    try {
+                        tv_loading.gone()
+                        detailViewModel.getCocktail(dataState.data[0])
+                        showIngredientRecycler(dataState.data[0])
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        tv_loading.visible()
+                        Toast.makeText(view.context, "Data not available", Toast.LENGTH_SHORT).show()
+                    }
                 }
-
-                is DataState.Error ->
+                is DataState.Error -> {
+                    tv_loading.visible()
                     Toast.makeText(view.context, dataState.exception.message, Toast.LENGTH_SHORT).show()
+                }
+                is DataState.Loading -> tv_loading.visible()
             }
+        }
+    }
+
+    private fun showIngredientRecycler(data: CocktailDetail) {
+        val rvIngredientsAdapter = CocktailIngredientsAdapter(
+                mapIngredientsToList(data),
+                mapMeasuresToList(data)
+        )
+        rv_ingredients.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = rvIngredientsAdapter
         }
     }
 

@@ -4,4 +4,6 @@
     <string name="instructions">Instructions</string>
 
     <string name="ARG_ID">cocktail_id</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="loading">Loading...</string>
 </resources>

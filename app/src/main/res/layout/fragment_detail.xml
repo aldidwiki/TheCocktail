@@ -61,7 +61,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/TextTitle"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="@dimen/titleMarginTop"
                     android:text="@string/serve" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -69,6 +69,24 @@
                     style="@style/TextContent"
                     android:text="@{data.cocktailGlass}"
                     tools:text="Glass" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/TextTitle"
+                    android:text="@string/ingredients" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_loading"
+                    style="@style/TextContent"
+                    android:text="@string/loading"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_ingredients"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/list_ingredients" />
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/TextTitle"

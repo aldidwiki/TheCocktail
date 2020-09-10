@@ -53,7 +53,7 @@ class HomeFragment : Fragment(), CocktailListAdapter.OnItemClickListener {
                 }
                 is DataState.Error -> {
                     progress_bar.gone()
-                    Toast.makeText(view.context, dataState.exception.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(view.context, dataState.exception.message, Toast.LENGTH_SHORT).show()
                 }
                 is DataState.Loading -> {
                     progress_bar.visible()

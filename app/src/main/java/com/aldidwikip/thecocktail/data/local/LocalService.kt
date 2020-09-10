@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.aldidwikip.thecocktail.data.model.Cocktail
 import com.aldidwikip.thecocktail.data.model.CocktailDetail
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LocalService {
@@ -26,4 +25,6 @@ interface LocalService {
     @Query("DELETE FROM cocktail_table")
     suspend fun deleteAllCocktails()
 
+    @Query("DELETE FROM cocktail_detail_table WHERE cocktailId = :id")
+    suspend fun deleteCocktailDetail(id: String)
 }

@@ -6,5 +6,4 @@
 
     <color name="backgroundColor">#D5B1A6</color>
     <color name="textContentColor">@android:color/black</color>
-    <color name="textItemColor">@android:color/black</color>
 </resources>

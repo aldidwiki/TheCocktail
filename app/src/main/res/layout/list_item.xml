@@ -37,7 +37,7 @@
                 android:layout_below="@id/img_item_photo"
                 android:layout_marginTop="10dp"
                 android:text="@{cocktailData.cocktailName}"
-                android:textColor="@color/textItemColor"
+                android:textColor="@color/textContentColor"
                 android:textSize="16sp"
                 tools:text="Cocktail Name" />
 

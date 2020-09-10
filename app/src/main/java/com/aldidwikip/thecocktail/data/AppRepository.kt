@@ -34,6 +34,7 @@ class AppRepository @Inject constructor(private val remoteService: RemoteService
         try {
             val response = remoteService.getCocktail(cocktailId)
             if (response.isSuccessful) {
+                localService.deleteCocktailDetail(cocktailId)
                 localService.saveDetail(response.body()!!.detailDrinks)
             } else {
                 Log.e(TAG, "getCocktail: ${response.errorBody()}")
