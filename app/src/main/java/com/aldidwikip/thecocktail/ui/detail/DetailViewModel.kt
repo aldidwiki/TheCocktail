@@ -25,6 +25,4 @@ class DetailViewModel @ViewModelInject constructor(private val appRepository: Ap
         _cocktailInstruction.value = data.cocktailInstructions
         _cocktailImg.value = data.cocktailImg
     }
-
-
 }

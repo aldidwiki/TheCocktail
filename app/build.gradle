@@ -42,6 +42,14 @@ android {
     }
 }
 
+// For coil
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjvm-default=all"]
+        jvmTarget = "1.8"
+    }
+}
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -93,4 +101,6 @@ dependencies {
     // Database debugging
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
+    // Material dialogs
+    implementation 'com.afollestad.material-dialogs:core:3.3.0'
 }

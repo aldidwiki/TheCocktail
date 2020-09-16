@@ -13,6 +13,11 @@ data class CocktailDetailResponse(
         val detailDrinks: List<CocktailDetail>
 )
 
+data class IngredientResponse(
+        @SerializedName("drinks")
+        val ingredientList: List<Ingredients>
+)
+
 @Entity(tableName = "cocktail_table")
 data class Cocktail(
 
@@ -76,4 +81,11 @@ data class CocktailDetail(
         val strMeasure14: String?,
         val strMeasure15: String?,
         val strMeasure16: String?
+)
+
+@Entity(tableName = "ingredient_table")
+data class Ingredients(
+        @SerializedName("strIngredient1")
+        @PrimaryKey
+        val ingredient: String
 )

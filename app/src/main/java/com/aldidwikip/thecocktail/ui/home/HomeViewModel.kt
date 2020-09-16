@@ -1,13 +1,28 @@
 package com.aldidwikip.thecocktail.ui.home
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.aldidwikip.thecocktail.data.AppRepository
+import com.aldidwikip.thecocktail.data.model.Cocktail
+import com.aldidwikip.thecocktail.data.model.Ingredients
+import com.aldidwikip.thecocktail.util.DataState
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-class HomeViewModel @ViewModelInject constructor(appRepository: AppRepository) : ViewModel() {
+class HomeViewModel @ViewModelInject constructor(private val appRepository: AppRepository) : ViewModel() {
+    private val _cocktails: MutableLiveData<DataState<List<Cocktail>>> = MutableLiveData()
 
-    val cocktails = appRepository.getCocktails()
-            .asLiveData(viewModelScope.coroutineContext)
+    fun getFilteredCocktails(ingredient: String) = viewModelScope.launch {
+        appRepository.getCocktails(ingredient).collect {
+            _cocktails.postValue(it)
+        }
+    }
+
+    val ingredientList: LiveData<List<Ingredients>> = liveData(viewModelScope.coroutineContext) {
+        appRepository.getIngredientList().collect {
+            emit(it)
+        }
+    }
+
+    val cocktails: LiveData<DataState<List<Cocktail>>> = _cocktails
 }

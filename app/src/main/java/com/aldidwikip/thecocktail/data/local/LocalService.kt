@@ -6,15 +6,23 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.aldidwikip.thecocktail.data.model.Cocktail
 import com.aldidwikip.thecocktail.data.model.CocktailDetail
+import com.aldidwikip.thecocktail.data.model.Ingredients
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LocalService {
 
-    @Query("SELECT * FROM cocktail_table")
+    @Query("SELECT * FROM cocktail_table ORDER BY cocktailName ASC")
     fun load(): List<Cocktail>
 
     @Query("SELECT * FROM cocktail_detail_table WHERE cocktailId = :id")
     fun loadDetail(id: String): List<CocktailDetail>
+
+    @Query("SELECT * FROM ingredient_table ORDER BY ingredient ASC")
+    fun loadIngredients(): Flow<List<Ingredients>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveIngredients(ingredients: List<Ingredients>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(cocktail: List<Cocktail>)

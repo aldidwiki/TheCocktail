@@ -6,4 +6,6 @@
 
     <color name="backgroundColor">#D5B1A6</color>
     <color name="textContentColor">@android:color/black</color>
+    <color name="subtitleTextColor">#8F8181</color>
+    <color name="md_color_button">@color/colorAccent</color>
 </resources>

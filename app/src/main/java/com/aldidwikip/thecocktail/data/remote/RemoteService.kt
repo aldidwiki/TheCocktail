@@ -2,6 +2,7 @@ package com.aldidwikip.thecocktail.data.remote
 
 import com.aldidwikip.thecocktail.data.model.CocktailDetailResponse
 import com.aldidwikip.thecocktail.data.model.CocktailResponse
+import com.aldidwikip.thecocktail.data.model.IngredientResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -13,4 +14,7 @@ interface RemoteService {
 
     @GET("lookup.php")
     suspend fun getCocktail(@Query("i") cocktailId: String): Response<CocktailDetailResponse>
+
+    @GET("list.php?i=list")
+    suspend fun getIngredientList(): Response<IngredientResponse>
 }
