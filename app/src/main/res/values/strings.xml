@@ -9,4 +9,5 @@
     <string name="filter">Filter</string>
     <string name="preference_name">Settings</string>
     <string name="select">SELECT</string>
+    <string name="search">Search…</string>
 </resources>

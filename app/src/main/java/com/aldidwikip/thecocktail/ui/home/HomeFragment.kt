@@ -1,11 +1,14 @@
 package com.aldidwikip.thecocktail.ui.home
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
@@ -31,6 +34,7 @@ import kotlin.properties.Delegates
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnItemClickListener {
     private val homeViewModel: HomeViewModel by viewModels()
+    private var keywords: String? = null
     private lateinit var navController: NavController
     private lateinit var rvAdapter: CocktailListAdapter
     private lateinit var ingredientQuery: String
@@ -62,10 +66,15 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
 
         navController = Navigation.findNavController(view)
 
-        homeViewModel.getFilteredCocktails(ingredientQuery)
+        keywords?.let {
+            homeViewModel.getSearchResult(it)
+        } ?: run {
+            homeViewModel.getFilteredCocktails(ingredientQuery)
+        }
 
         initRecycler()
         subscribeData()
+        searchCocktails()
     }
 
     private fun initRecycler() {
@@ -82,6 +91,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
             when (dataState) {
                 is DataState.Success -> {
                     progress_bar.gone()
+                    search_box.text?.clear()
                     appCompatActivity.supportActionBar?.subtitle = ingredientQuery
                     rvAdapter.submitList(dataState.data)
                 }
@@ -98,6 +108,44 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
             ingredientsList = ingredients.map { it.ingredient }
             choiceIndex = ingredientsList.indexOf(ingredientQuery)
         }
+
+        homeViewModel.cocktailsResult.observe(viewLifecycleOwner) { dataState ->
+            keywords?.let {
+                when (dataState) {
+                    is DataState.Loading -> progress_bar.visible()
+                    is DataState.Success -> {
+                        progress_bar.gone()
+                        appCompatActivity.supportActionBar?.subtitle = keywords
+                        rvAdapter.submitList(dataState.data)
+                        choiceIndex = -1
+                    }
+                    is DataState.Error -> {
+                        progress_bar.gone()
+                        Toast.makeText(requireContext(), "Data not found", Toast.LENGTH_SHORT)
+                                .show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun searchCocktails() {
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        search_box.setOnEditorActionListener { v, actionId, _ ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    keywords = v.text.toString().trim()
+                    keywords?.let {
+                        v.clearFocus()
+                        imm.hideSoftInputFromWindow(v.windowToken, 0)
+                        homeViewModel.getSearchResult(it)
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -108,6 +156,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
                     ingredientQuery = text.toString()
                     choiceIndex = index
                     homeViewModel.getFilteredCocktails(ingredientQuery)
+                    keywords = null
                 }
                 positiveButton(R.string.select)
             }

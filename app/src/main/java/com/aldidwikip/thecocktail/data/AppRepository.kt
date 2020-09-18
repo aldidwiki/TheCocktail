@@ -65,4 +65,18 @@ class AppRepository @Inject constructor(private val remoteService: RemoteService
             return localService.loadIngredients().flowOn(IO)
         }
     }
+
+    fun getSearchResult(keywords: String) = flow {
+        emit(DataState.Loading)
+        try {
+            val response = remoteService.getSearchResult(keywords)
+            if (response.isSuccessful && response.body()!!.drinks.isNotEmpty()) {
+                emit(DataState.Success(response.body()!!.drinks))
+            } else {
+                Log.e(TAG, "getSearchResult: ${response.errorBody()}")
+            }
+        } catch (e: Exception) {
+            emit(DataState.Error(e))
+        }
+    }
 }

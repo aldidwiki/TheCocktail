@@ -16,8 +16,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="1dp">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -26,6 +25,25 @@
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:subtitleTextColor="@color/subtitleTextColor"
             app:titleTextColor="@android:color/white" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@color/backgroundColor"
+            app:endIconMode="clear_text"
+            app:hintEnabled="false"
+            app:startIconDrawable="@drawable/ic_baseline_search_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/search_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/search"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:textColor="?colorOnBackground" />
+        </com.google.android.material.textfield.TextInputLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
