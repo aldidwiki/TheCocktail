@@ -78,5 +78,5 @@ class AppRepository @Inject constructor(private val remoteService: RemoteService
         } catch (e: Exception) {
             emit(DataState.Error(e))
         }
-    }
+    }.flowOn(IO)
 }

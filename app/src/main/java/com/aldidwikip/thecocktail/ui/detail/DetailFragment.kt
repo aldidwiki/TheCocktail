@@ -49,7 +49,11 @@ class DetailFragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         val cocktailId = arguments?.getString(resources.getString(R.string.ARG_ID))
-        detailViewModel.cocktail(cocktailId!!).observe(viewLifecycleOwner) { dataState ->
+        subscribeData(cocktailId!!)
+    }
+
+    private fun subscribeData(cocktailId: String) {
+        detailViewModel.cocktail(cocktailId).observe(viewLifecycleOwner) { dataState ->
             when (dataState) {
                 is DataState.Success -> {
                     try {
@@ -59,12 +63,12 @@ class DetailFragment : Fragment() {
                     } catch (e: Exception) {
                         e.printStackTrace()
                         tv_loading.visible()
-                        Toast.makeText(view.context, "Data not available", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Data not available", Toast.LENGTH_SHORT).show()
                     }
                 }
                 is DataState.Error -> {
                     tv_loading.visible()
-                    Toast.makeText(view.context, dataState.exception.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, dataState.exception.message, Toast.LENGTH_SHORT).show()
                 }
                 is DataState.Loading -> tv_loading.visible()
             }
@@ -77,7 +81,7 @@ class DetailFragment : Fragment() {
                 mapMeasuresToList(data)
         )
         rv_ingredients.apply {
-            layoutManager = LinearLayoutManager(activity)
+            layoutManager = LinearLayoutManager(context)
             adapter = rvIngredientsAdapter
         }
     }

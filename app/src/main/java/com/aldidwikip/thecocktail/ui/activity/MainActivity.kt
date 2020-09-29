@@ -1,4 +1,4 @@
-package com.aldidwikip.thecocktail.ui
+package com.aldidwikip.thecocktail.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

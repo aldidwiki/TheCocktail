@@ -97,7 +97,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
                 }
                 is DataState.Error -> {
                     progress_bar.gone()
-                    Toast.makeText(requireContext(), dataState.exception.message, Toast.LENGTH_SHORT)
+                    Toast.makeText(context, dataState.exception.message, Toast.LENGTH_SHORT)
                             .show()
                 }
                 is DataState.Loading -> progress_bar.visible()
@@ -121,7 +121,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
                     }
                     is DataState.Error -> {
                         progress_bar.gone()
-                        Toast.makeText(requireContext(), "Data not found", Toast.LENGTH_SHORT)
+                        Toast.makeText(context, "Data not found", Toast.LENGTH_SHORT)
                                 .show()
                     }
                 }
@@ -165,8 +165,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_filter, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onItemClicked(dataCocktailModel: Cocktail) {
