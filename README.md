@@ -1,6 +1,7 @@
-# TheCocktail
+# TheCocktail [![TheCocktail](https://img.shields.io/badge/APK-brown?style=for-the-badge&logo=android)](https://github.com/aldidwiki/TheCocktail/raw/master/apk/TheCocktail.apk)
 
-Aplikasi ini adalah sebuah aplikasi sederhana untuk menampilkan daftar Cocktail beserta cara penyajiannya. Aplikasi ini juga sebagai contoh sederhana dari penggunaan [Architecture Components](https://developer.android.com/topic/libraries/architecture) dengan design pattern [MVVM](https://developer.android.com/jetpack/guide). Data pada aplikasi ini diambil dari API [TheCocktailDB](https://www.thecocktaildb.com/api.php). Berikut beberapa library dan component yang digunakan dalam aplikasi ini :
+This is a simple app to provide some information about Cocktails. This app is also as an example of using [Architecture Components](https://developer.android.com/topic/libraries/architecture) with [MVVM](https://developer.android.com/jetpack/guide) design pattern. The app's data is obtained from [TheCocktailDB](https://www.thecocktaildb.com/api.php) API. These followings are some library and components are used in this app :
+
 - [Data Binding](https://developer.android.com/topic/libraries/data-binding)
 - [Room](https://developer.android.com/topic/libraries/architecture/room)
 - [Live Data](https://developer.android.com/topic/libraries/architecture/livedata)
@@ -11,3 +12,9 @@ Aplikasi ini adalah sebuah aplikasi sederhana untuk menampilkan daftar Cocktail 
 - [Retrofit](https://square.github.io/retrofit/)
 - [Coil](https://coil-kt.github.io/coil/)
 - [Android Debug Database](https://github.com/amitshekhariitbhu/Android-Debug-Database)
+- [Material Dialogs](https://github.com/afollestad/material-dialogs)
+
+## Screenshots
+
+<kbd><img src="https://github.com/aldidwiki/TheCocktail/blob/master/screenshots/Screenshot_20200918-161915_The%20Cocktail.jpg"  width="200" height="400"></kbd>
+<kbd><img src="https://github.com/aldidwiki/TheCocktail/blob/master/screenshots/Screenshot_20200918-162047_The%20Cocktail.jpg"  width="200" height="400"></kbd>
