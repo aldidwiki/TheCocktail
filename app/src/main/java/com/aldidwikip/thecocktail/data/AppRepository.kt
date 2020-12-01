@@ -7,14 +7,17 @@ import com.aldidwikip.thecocktail.data.remote.RemoteService
 import com.aldidwikip.thecocktail.util.DataState
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-private const val TAG = "AppRepository"
-
 class AppRepository @Inject constructor(private val remoteService: RemoteService,
-                                        private val localService: LocalService) {
+        private val localService: LocalService) {
+
+    companion object {
+        private const val TAG = "AppRepository"
+    }
 
     fun getCocktails(ingredient: String) = flow {
         emit(DataState.Loading)
@@ -29,7 +32,7 @@ class AppRepository @Inject constructor(private val remoteService: RemoteService
         } catch (e: Exception) {
             emit(DataState.Error(e))
         } finally {
-            emit(DataState.Success(localService.load()))
+            localService.load().collect { emit(DataState.Success(it)) }
         }
     }.flowOn(IO)
 
@@ -46,7 +49,7 @@ class AppRepository @Inject constructor(private val remoteService: RemoteService
         } catch (e: Exception) {
             emit(DataState.Error(e))
         } finally {
-            emit(DataState.Success(localService.loadDetail(cocktailId)))
+            localService.loadDetail(cocktailId).collect { emit(DataState.Success(it)) }
         }
     }.flowOn(IO)
 

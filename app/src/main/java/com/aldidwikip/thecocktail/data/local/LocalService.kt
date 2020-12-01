@@ -13,10 +13,10 @@ import kotlinx.coroutines.flow.Flow
 interface LocalService {
 
     @Query("SELECT * FROM cocktail_table ORDER BY cocktailName ASC")
-    fun load(): List<Cocktail>
+    fun load(): Flow<List<Cocktail>>
 
     @Query("SELECT * FROM cocktail_detail_table WHERE cocktailId = :id")
-    fun loadDetail(id: String): List<CocktailDetail>
+    fun loadDetail(id: String): Flow<List<CocktailDetail>>
 
     @Query("SELECT * FROM ingredient_table ORDER BY ingredient ASC")
     fun loadIngredients(): Flow<List<Ingredients>>
