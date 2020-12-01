@@ -26,7 +26,7 @@ class DetailFragment : Fragment() {
     private val detailViewModel: DetailViewModel by viewModels()
     private lateinit var navController: NavController
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding: FragmentDetailBinding =
                 DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false)
         binding.lifecycleOwner = this
@@ -58,7 +58,7 @@ class DetailFragment : Fragment() {
                 is DataState.Success -> {
                     try {
                         tv_loading.gone()
-                        detailViewModel.getCocktail(dataState.data[0])
+                        detailViewModel.setCocktail(dataState.data[0])
                         showIngredientRecycler(dataState.data[0])
                     } catch (e: Exception) {
                         e.printStackTrace()

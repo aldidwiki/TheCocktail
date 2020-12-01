@@ -19,7 +19,7 @@ class DetailViewModel @ViewModelInject constructor(private val appRepository: Ap
     fun cocktail(cocktailId: String) = appRepository.getCocktail(cocktailId)
             .asLiveData(viewModelScope.coroutineContext)
 
-    fun getCocktail(data: CocktailDetail) {
+    fun setCocktail(data: CocktailDetail) {
         _cocktailName.value = data.cocktailName
         _cocktailGlass.value = data.cocktailGlass
         _cocktailInstruction.value = data.cocktailInstructions
