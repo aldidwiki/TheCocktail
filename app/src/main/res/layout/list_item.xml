@@ -1,4 +1,5 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -24,10 +25,11 @@
 
             <ImageView
                 android:id="@+id/img_item_photo"
-                img_from_url="@{cocktailData.cocktailImg}"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
+                android:contentDescription="@string/cocktail_image"
                 android:scaleType="center"
+                app:img_from_url="@{cocktailData.cocktailImg}"
                 tools:src="@mipmap/ic_launcher" />
 
             <com.google.android.material.textview.MaterialTextView

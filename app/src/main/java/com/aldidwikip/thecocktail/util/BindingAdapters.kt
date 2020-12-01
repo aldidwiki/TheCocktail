@@ -2,10 +2,10 @@ package com.aldidwikip.thecocktail.util
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import coil.api.load
+import coil.load
 import com.aldidwikip.thecocktail.R
 
-@BindingAdapter("img_from_url")
+@BindingAdapter("app:img_from_url")
 fun imgFromUrl(imageView: ImageView, url: String?) {
     imageView.load(url) {
         crossfade(true)

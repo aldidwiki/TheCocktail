@@ -31,11 +31,12 @@
 
                 <ImageView
                     android:id="@+id/item_image"
-                    img_from_url="@{data.cocktailImg}"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:adjustViewBounds="true"
+                    android:contentDescription="@string/cocktail_image"
                     android:scaleType="fitXY"
+                    app:img_from_url="@{data.cocktailImg}"
                     app:layout_collapseMode="parallax"
                     tools:src="@color/colorAccent" />
 
