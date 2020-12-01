@@ -2,11 +2,9 @@ package com.aldidwikip.thecocktail.data
 
 import android.util.Log
 import com.aldidwikip.thecocktail.data.local.LocalService
-import com.aldidwikip.thecocktail.data.model.Ingredients
 import com.aldidwikip.thecocktail.data.remote.RemoteService
 import com.aldidwikip.thecocktail.util.DataState
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -53,7 +51,7 @@ class AppRepository @Inject constructor(private val remoteService: RemoteService
         }
     }.flowOn(IO)
 
-    suspend fun getIngredientList(): Flow<List<Ingredients>> {
+    val getIngredientList = flow {
         try {
             val response = remoteService.getIngredientList()
             if (response.isSuccessful) {
@@ -65,9 +63,9 @@ class AppRepository @Inject constructor(private val remoteService: RemoteService
             e.printStackTrace()
             Log.e(TAG, "getIngredientList: $e")
         } finally {
-            return localService.loadIngredients().flowOn(IO)
+            localService.loadIngredients().collect { emit(it) }
         }
-    }
+    }.flowOn(IO)
 
     fun getSearchResult(keywords: String) = flow {
         emit(DataState.Loading)

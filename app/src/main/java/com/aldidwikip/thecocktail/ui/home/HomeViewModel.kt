@@ -12,16 +12,12 @@ import kotlinx.coroutines.launch
 class HomeViewModel @ViewModelInject constructor(private val appRepository: AppRepository) : ViewModel() {
     private val _cocktails: MutableLiveData<DataState<List<Cocktail>>> = MutableLiveData()
     private val _cocktailsResult: MutableLiveData<DataState<List<Cocktail>>> = MutableLiveData()
+    val cocktails: LiveData<DataState<List<Cocktail>>> = _cocktails
+    val cocktailsResult: LiveData<DataState<List<Cocktail>>> = _cocktailsResult
 
     fun getFilteredCocktails(ingredient: String) = viewModelScope.launch {
         appRepository.getCocktails(ingredient).collect {
             _cocktails.postValue(it)
-        }
-    }
-
-    val ingredientList: LiveData<List<Ingredients>> = liveData(viewModelScope.coroutineContext) {
-        appRepository.getIngredientList().collect {
-            emit(it)
         }
     }
 
@@ -31,6 +27,5 @@ class HomeViewModel @ViewModelInject constructor(private val appRepository: AppR
         }
     }
 
-    val cocktails: LiveData<DataState<List<Cocktail>>> = _cocktails
-    val cocktailsResult: LiveData<DataState<List<Cocktail>>> = _cocktailsResult
+    val ingredientList: LiveData<List<Ingredients>> = appRepository.getIngredientList.asLiveData()
 }
