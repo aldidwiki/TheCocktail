@@ -7,10 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.aldidwikip.thecocktail.R
 import com.google.android.material.textview.MaterialTextView
 
-class CocktailIngredientsAdapter(
-        private val ingredients: List<String>,
-        private val measures: List<String?>
-) : RecyclerView.Adapter<CocktailIngredientsAdapter.IngredientViewHolder>() {
+class CocktailIngredientsAdapter : RecyclerView.Adapter<CocktailIngredientsAdapter.IngredientViewHolder>() {
+    private lateinit var ingredients: List<String>
+    private lateinit var measures: List<String?>
+
+    fun setData(ingredients: List<String>, measures: List<String?>) {
+        this.ingredients = ingredients
+        this.measures = measures
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_ingredients, parent, false)

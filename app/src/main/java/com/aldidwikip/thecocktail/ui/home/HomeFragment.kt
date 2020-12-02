@@ -49,6 +49,12 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         ingredientQuery = sharedPreferences.getString("ingredients", "Rum").toString()
+
+        keywords?.let {
+            homeViewModel.getSearchResult(it)
+        } ?: run {
+            homeViewModel.getFilteredCocktails(ingredientQuery)
+        }
     }
 
     override fun onPause() {
@@ -65,16 +71,13 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
         appCompatActivity.setSupportActionBar(toolbar)
 
         navController = Navigation.findNavController(view)
+    }
 
-        keywords?.let {
-            homeViewModel.getSearchResult(it)
-        } ?: run {
-            homeViewModel.getFilteredCocktails(ingredientQuery)
-        }
-
-        initRecycler()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         subscribeData()
         searchCocktails()
+        initRecycler()
     }
 
     private fun initRecycler() {
@@ -97,8 +100,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
                 }
                 is DataState.Error -> {
                     progress_bar.gone()
-                    Toast.makeText(context, dataState.exception.message, Toast.LENGTH_SHORT)
-                            .show()
+                    Toast.makeText(context, dataState.exception.message, Toast.LENGTH_SHORT).show()
                 }
                 is DataState.Loading -> progress_bar.visible()
             }
@@ -121,8 +123,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
                     }
                     is DataState.Error -> {
                         progress_bar.gone()
-                        Toast.makeText(context, "Data not found", Toast.LENGTH_SHORT)
-                                .show()
+                        Toast.makeText(context, "Data not found", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

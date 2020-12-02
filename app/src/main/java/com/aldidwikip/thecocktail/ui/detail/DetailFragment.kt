@@ -47,6 +47,10 @@ class DetailFragment : Fragment() {
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         navController = Navigation.findNavController(view)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         val cocktailId = arguments?.getString(resources.getString(R.string.ARG_ID))
         subscribeData(cocktailId!!)
@@ -76,10 +80,8 @@ class DetailFragment : Fragment() {
     }
 
     private fun showIngredientRecycler(data: CocktailDetail) {
-        val rvIngredientsAdapter = CocktailIngredientsAdapter(
-                mapIngredientsToList(data),
-                mapMeasuresToList(data)
-        )
+        val rvIngredientsAdapter = CocktailIngredientsAdapter()
+        rvIngredientsAdapter.setData(mapIngredientsToList(data), mapMeasuresToList(data))
         rv_ingredients.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = rvIngredientsAdapter
@@ -88,7 +90,7 @@ class DetailFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            activity?.onBackPressed()
+            navController.navigateUp()
         }
         return super.onOptionsItemSelected(item)
     }
