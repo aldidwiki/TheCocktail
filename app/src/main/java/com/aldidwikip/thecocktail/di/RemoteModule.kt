@@ -1,12 +1,12 @@
 package com.aldidwikip.thecocktail.di
 
 import com.aldidwikip.thecocktail.data.remote.RemoteService
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -14,16 +14,20 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RemoteModule {
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build()
+    }
 
     @Singleton
     @Provides
-    fun provideGsonBuilder(): Gson = GsonBuilder().create()
-
-    @Singleton
-    @Provides
-    fun provideRetrofit(gson: Gson): Retrofit = Retrofit.Builder()
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
             .baseUrl("https://www.thecocktaildb.com/api/json/v1/1/")
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
             .build()
 
     @Singleton
