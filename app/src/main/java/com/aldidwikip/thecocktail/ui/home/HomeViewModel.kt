@@ -1,15 +1,16 @@
 package com.aldidwikip.thecocktail.ui.home
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.aldidwikip.thecocktail.data.AppRepository
 import com.aldidwikip.thecocktail.data.model.Cocktail
 import com.aldidwikip.thecocktail.data.model.Ingredients
 import com.aldidwikip.thecocktail.util.DataState
-import kotlinx.coroutines.flow.collect
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel @ViewModelInject constructor(private val appRepository: AppRepository) : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(private val appRepository: AppRepository) : ViewModel() {
     private val _cocktails: MutableLiveData<DataState<List<Cocktail>>> = MutableLiveData()
     private val _cocktailsResult: MutableLiveData<DataState<List<Cocktail>>> = MutableLiveData()
     val cocktails: LiveData<DataState<List<Cocktail>>> = _cocktails
