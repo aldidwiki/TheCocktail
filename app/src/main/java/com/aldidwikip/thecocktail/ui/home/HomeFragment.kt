@@ -14,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,9 +31,12 @@ import com.aldidwikip.thecocktail.util.gone
 import com.aldidwikip.thecocktail.util.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnItemClickListener {
     private val homeViewModel: HomeViewModel by viewModels()
@@ -51,9 +57,9 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
         ingredientQuery = sharedPreferences.getString("ingredients", "Rum").toString()
 
         keywords?.let {
-            homeViewModel.getSearchResult(it)
+            homeViewModel.setSearchQuery(it)
         } ?: run {
-            homeViewModel.getFilteredCocktails(ingredientQuery)
+            homeViewModel.setIngredientQuery(ingredientQuery)
         }
     }
 
@@ -71,10 +77,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
         appCompatActivity.setSupportActionBar(toolbar)
 
         navController = Navigation.findNavController(view)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         subscribeData()
         searchCocktails()
         initRecycler()
@@ -90,40 +93,50 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
     }
 
     private fun subscribeData() {
-        homeViewModel.cocktails.observe(viewLifecycleOwner) { dataState ->
-            when (dataState) {
-                is DataState.Success -> {
-                    progress_bar.gone()
-                    search_box.text?.clear()
-                    appCompatActivity.supportActionBar?.subtitle = ingredientQuery
-                    rvAdapter.submitList(dataState.data)
-                }
-                is DataState.Error -> {
-                    progress_bar.gone()
-                    Toast.makeText(context, dataState.exception.message, Toast.LENGTH_SHORT).show()
-                }
-                is DataState.Loading -> progress_bar.visible()
-            }
-        }
-
-        homeViewModel.ingredientList.observe(viewLifecycleOwner) { ingredients ->
-            ingredientsList = ingredients.map { it.ingredient }
-            choiceIndex = ingredientsList.indexOf(ingredientQuery)
-        }
-
-        homeViewModel.cocktailsResult.observe(viewLifecycleOwner) { dataState ->
-            keywords?.let {
-                when (dataState) {
-                    is DataState.Loading -> progress_bar.visible()
-                    is DataState.Success -> {
-                        progress_bar.gone()
-                        appCompatActivity.supportActionBar?.subtitle = keywords
-                        rvAdapter.submitList(dataState.data)
-                        choiceIndex = -1
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    homeViewModel.getFilteredCocktails().collect { dataState ->
+                        when (dataState) {
+                            is DataState.Success -> {
+                                progress_bar.gone()
+                                search_box.text?.clear()
+                                appCompatActivity.supportActionBar?.subtitle = ingredientQuery
+                                rvAdapter.submitList(dataState.data)
+                            }
+                            is DataState.Error -> {
+                                progress_bar.gone()
+                                Toast.makeText(context, dataState.exception.message, Toast.LENGTH_SHORT).show()
+                            }
+                            is DataState.Loading -> progress_bar.visible()
+                        }
                     }
-                    is DataState.Error -> {
-                        progress_bar.gone()
-                        Toast.makeText(context, "Data not found", Toast.LENGTH_SHORT).show()
+                }
+
+                launch {
+                    homeViewModel.getIngredientList().collect { ingredients ->
+                        ingredientsList = ingredients.map { it.ingredient }
+                        choiceIndex = ingredientsList.indexOf(ingredientQuery)
+                    }
+                }
+
+                launch {
+                    homeViewModel.getSearchCocktailResult().collect { dataState ->
+                        keywords?.let {
+                            when (dataState) {
+                                is DataState.Loading -> progress_bar.visible()
+                                is DataState.Success -> {
+                                    progress_bar.gone()
+                                    appCompatActivity.supportActionBar?.subtitle = keywords
+                                    rvAdapter.submitList(dataState.data)
+                                    choiceIndex = -1
+                                }
+                                is DataState.Error -> {
+                                    progress_bar.gone()
+                                    Toast.makeText(context, "Data not found", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -140,7 +153,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
                     keywords?.let {
                         v.clearFocus()
                         imm.hideSoftInputFromWindow(v.windowToken, 0)
-                        homeViewModel.getSearchResult(it)
+                        homeViewModel.setSearchQuery(it)
                     }
                     true
                 }
@@ -156,7 +169,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CocktailListAdapter.OnIte
                 listItemsSingleChoice(items = ingredientsList, initialSelection = choiceIndex) { _, index, text ->
                     ingredientQuery = text.toString()
                     choiceIndex = index
-                    homeViewModel.getFilteredCocktails(ingredientQuery)
+                    homeViewModel.setIngredientQuery(ingredientQuery)
                     keywords = null
                 }
                 positiveButton(R.string.select)

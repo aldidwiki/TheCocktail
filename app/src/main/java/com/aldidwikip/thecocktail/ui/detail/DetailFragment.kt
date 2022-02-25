@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +22,10 @@ import com.aldidwikip.thecocktail.ui.adapter.CocktailIngredientsAdapter
 import com.aldidwikip.thecocktail.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_detail.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class DetailFragment : Fragment() {
     private val detailViewModel: DetailViewModel by viewModels()
@@ -47,35 +52,36 @@ class DetailFragment : Fragment() {
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         navController = Navigation.findNavController(view)
+
+        arguments?.getString(resources.getString(R.string.ARG_ID))?.let {
+            detailViewModel.setCocktailId(it)
+        }
+        subscribeData()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        val cocktailId = arguments?.getString(resources.getString(R.string.ARG_ID))
-        subscribeData(cocktailId!!)
-    }
-
-    private fun subscribeData(cocktailId: String) {
-        detailViewModel.cocktail(cocktailId).observe(viewLifecycleOwner) { dataState ->
-            when (dataState) {
-                is DataState.Success -> {
-                    try {
-                        tv_loading.gone()
-                        detailViewModel.setCocktail(dataState.data[0])
-                        showIngredientRecycler(dataState.data[0])
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        tv_loading.visible()
-                        Toast.makeText(context, "Data not available", Toast.LENGTH_SHORT).show()
+    private fun subscribeData() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            detailViewModel.cocktail().flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                    .collect { dataState ->
+                        when (dataState) {
+                            is DataState.Success -> {
+                                try {
+                                    tv_loading.gone()
+                                    detailViewModel.setCocktail(dataState.data[0])
+                                    showIngredientRecycler(dataState.data[0])
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    tv_loading.visible()
+                                    Toast.makeText(context, "Data not available", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            is DataState.Error -> {
+                                tv_loading.visible()
+                                Toast.makeText(context, dataState.exception.message, Toast.LENGTH_SHORT).show()
+                            }
+                            is DataState.Loading -> tv_loading.visible()
+                        }
                     }
-                }
-                is DataState.Error -> {
-                    tv_loading.visible()
-                    Toast.makeText(context, dataState.exception.message, Toast.LENGTH_SHORT).show()
-                }
-                is DataState.Loading -> tv_loading.visible()
-            }
         }
     }
 
